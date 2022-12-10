@@ -1,5 +1,5 @@
 services:
-  monolith:
+  web:
     build:
       args:
       - NODE_ENV=production
