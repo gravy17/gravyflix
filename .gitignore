@@ -1,0 +1,8 @@
+node_modules
+dist
+.env
+.vscode
+database.sqlite
+todo
+.DS_Store
+secrets

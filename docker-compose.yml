@@ -1,0 +1,18 @@
+services:
+  monolith:
+    build:
+      args:
+      - NODE_ENV=production
+      context: .
+    command: yarn start
+    env_file:
+      - .env
+    ports:
+      - 80:80
+    volumes:
+      - /database.sqlite:/home/node/app/database.sqlite
+    networks:
+      - public
+networks:
+  public:
+  

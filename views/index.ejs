@@ -1,0 +1,13 @@
+<%- include('partials/head', { title }); %> <%- include('partials/header', {
+title, user }); %>
+<main class="page-content">
+  <h1>Welcome to <%= title.split('|')[0] %></h1>
+  <h2>Latest Movies</h2>
+  <ul class="cards">
+    <% if (!movies.length){ %>
+    <h3>No Movies To Buy. Login to add movies</h3>
+    <% } %> <% movies.forEach(function(movie){ %> <%- include('partials/movie',
+    { movie, id: movie.id, canModify: false }); %> <% }); %>
+  </ul>
+</main>
+<%- include('partials/footer'); %>

@@ -1,0 +1,15 @@
+node_modules
+src
+__tests__
+.gitignore
+.env
+.vscode
+database.sqlite
+todo
+tsconfig.json
+README.md
+jest.config.js
+.DS_Store
+Dockerfile
+docker-compose.yml
+yarn.lock
