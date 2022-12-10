@@ -49,7 +49,8 @@ async function login(req, res, next) {
             });
         }
     }
-    catch (err) {
+    catch (error) {
+        console.error(error);
         res.status(500).json({
             message: "Unexpected error: Failed to authenticate user",
         });
@@ -85,7 +86,8 @@ async function register(req, res, next) {
             throw new Error();
         }
     }
-    catch (err) {
+    catch (error) {
+        console.error(error);
         res.status(500).json({
             message: "Failed to register user",
         });

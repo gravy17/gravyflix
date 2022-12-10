@@ -26,7 +26,8 @@ async function auth(req, res, next) {
         req.user = id;
         next();
     }
-    catch (err) {
+    catch (error) {
+        console.error(error);
         res.status(401).json({ message: "User not logged in" });
     }
 }

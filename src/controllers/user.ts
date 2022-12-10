@@ -51,7 +51,8 @@ export async function login(req: Request, res: Response, next: NextFunction) {
         message: "Invalid Credentials",
       });
     }
-  } catch (err) {
+  } catch (error) {
+    console.error(error)
     res.status(500).json({
       message: "Unexpected error: Failed to authenticate user",
     });
@@ -94,7 +95,8 @@ export async function register(
     } else {
       throw new Error();
     }
-  } catch (err) {
+  } catch (error) {
+    console.error(error)
     res.status(500).json({
       message: "Failed to register user",
     });

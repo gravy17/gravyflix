@@ -21,6 +21,7 @@ export async function getMovies(
       records
     });
   } catch (error) {
+    console.error(error)
     res.status(500).json({
       message: "Unexpected error: Failed to get movies",
     });
@@ -45,6 +46,7 @@ export async function getMovie(
       record,
     });
   } catch (error) {
+    console.error(error)
     res.status(500).json({
       message: "Unexpected error: Failed to get movie",
       id: req.params.id,
@@ -86,7 +88,8 @@ export async function addMovie(
       message: "Movie successfully added",
       created,
     });
-  } catch (err) {
+  } catch (error) {
+    console.error(error)
     res.status(500).json({
       message: "Unexpected error: Failed to create movie",
     });
@@ -136,6 +139,7 @@ export async function updateMovie(
       updated,
     });
   } catch (error) {
+    console.error(error)
     res.status(500).json({
       message: "Unexpected error: Failed to update movie",
       id: req.params.id,
@@ -184,6 +188,7 @@ export async function addOrUpdateMovie(
       });
     }
   } catch (error) {
+    console.error(error)
     res.status(500).json({
       message: "Unexpected error: Failed to add/update movie",
       id: req.params.id,
@@ -217,6 +222,7 @@ export async function deleteMovie(
       deleted,
     });
   } catch (error) {
+    console.error(error)
     res.status(500).json({
       message: "Unexpected error: Failed to delete movie",
       id: req.params.id,

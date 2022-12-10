@@ -55,6 +55,7 @@ async function renderHome(req, res, next) {
         }
     }
     catch (error) {
+        console.error(error);
         return send500(req, res, error);
     }
 }
@@ -80,6 +81,7 @@ async function renderDashboard(req, res, next) {
         }
     }
     catch (error) {
+        console.error(error);
         return send500(req, res, error);
     }
 }
@@ -98,6 +100,7 @@ async function renderMovie(req, res, next) {
         });
     }
     catch (error) {
+        console.error(error);
         return send500(req, res, error);
     }
 }

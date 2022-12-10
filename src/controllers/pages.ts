@@ -66,6 +66,7 @@ export async function renderHome(
       res.status(200).render("index", { movies, title: title + " | Home", user, limit, offset });
     }
   } catch (error) {
+    console.error(error)
     return send500(req, res, error);
   }
 }
@@ -95,6 +96,7 @@ export async function renderDashboard(
       }
     }
   } catch (error) {
+    console.error(error)
     return send500(req, res, error);
   }
 }
@@ -116,6 +118,7 @@ export async function renderMovie(
       user: req.cookies.username,
     });
   } catch (error) {
+    console.error(error)
     return send500(req, res, error);
   }
 }
