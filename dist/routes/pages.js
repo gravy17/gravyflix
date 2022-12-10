@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const pages_1 = require("../controllers/pages");
+const router = (0, express_1.Router)();
+router.get("/", pages_1.renderHome);
+router.get("/my-movies", pages_1.renderDashboard);
+router.get("/login", pages_1.renderLogin);
+router.get("/register", pages_1.renderSignup);
+router.get("/logout", pages_1.handleLogout);
+router.get("/:id", pages_1.renderMovie);
+exports.default = router;
