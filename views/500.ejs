@@ -1,0 +1,11 @@
+<%- include('partials/head', { title }); %> <%- include('partials/header', {
+title, user }); %>
+<main class="page-content">
+  <h1>Internal Server Error</h1>
+  <h2>Error: <%= status %></h2>
+  <p><%= message %></p>
+  <% if (error && error.stack) { %>
+  <pre><%= error.stack %></pre>
+  <% } %>
+</main>
+<%- include('partials/footer'); %>

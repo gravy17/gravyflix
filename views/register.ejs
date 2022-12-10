@@ -1,0 +1,52 @@
+<%- include('partials/head', { title }); %> <%- include('partials/header', {
+title, user }); %>
+<main class="page-content">
+  <h1>Sign Up</h1>
+  <form id="signup-form">
+    <div class="input-group">
+      <label for="fullname">Full Name:</label
+      ><input name="fullname" type="text" placeholder="Your full name" />
+    </div>
+    <div class="input-group">
+      <label for="email">Email: *</label
+      ><input
+        name="email"
+        type="text"
+        placeholder="Your email address"
+        required
+      />
+    </div>
+    <div class="input-group">
+      <label for="username">Username: *</label
+      ><input
+        name="username"
+        type="text"
+        placeholder="Username here"
+        required
+      />
+    </div>
+    <div class="input-group">
+      <label for="password">Password: *</label
+      ><input
+        name="password"
+        type="password"
+        placeholder="Your password"
+        required
+      />
+    </div>
+    <div class="input-group">
+      <label for="confirm_password">Confirm password: *</label
+      ><input
+        name="confirm_password"
+        type="password"
+        placeholder="Confirm password"
+        required
+      />
+    </div>
+    <div class="left-aligned">
+      <input type="submit" value="Sign Up" class="button" />
+    </div>
+  </form>
+</main>
+<script src="/scripts/register.js" defer></script>
+<%- include('partials/footer'); %>

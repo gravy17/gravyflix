@@ -1,0 +1,48 @@
+<%- include('partials/head', { title }); %>
+  <%- include('partials/header', { title, user }); %>
+  <div id="bodyoverlay"></div>
+  
+  <section id="deletewarning" class="card deletewarning">
+    <h2>Are you sure you want to delete <span id="delete-target"></span>?</h2>
+    <div class="confirmation">
+      <button id="canceldel" class="button">No</button>
+      <button id="confirmdel" class="button">Delete</button>
+    </div>
+  </section>
+  <section id="editor" class="editor card">
+    <svg id="close-editor" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 24 24" class="editor-close-btn" fill="currentColor">
+      <path
+        d="M 4.7070312 3.2929688 L 3.2929688 4.7070312 L 10.585938 12 L 3.2929688 19.292969 L 4.7070312 20.707031 L 12 13.414062 L 19.292969 20.707031 L 20.707031 19.292969 L 13.414062 12 L 20.707031 4.7070312 L 19.292969 3.2929688 L 12 10.585938 L 4.7070312 3.2929688 z">
+      </path>
+    </svg></button>
+
+    <h1>Edit</h1>
+    <form id="edit-form">
+      <div class="input-group"><label for="title">Title: </label>
+        <input name="title" type="text" placeholder="Title">
+      </div>
+      <div class="input-group"><label for="price">Price: </label>
+        <input name="price" type="text" placeholder="Price">
+      </div>
+      <div class="input-group"><label for="description">Description: </label><input name="description" type="text"
+          placeholder="Description"></div>
+      <div class="input-group"><label for="image">Image URL: </label><input name="image" type="text"
+          placeholder="URL for the image"></div>
+      <div class="left-aligned"><input type="button" id="editSubmit" class="button"></div>
+    </form>
+  </section>
+
+  <main class="page-content">
+      <h2>Your movies</h2>
+      <button class="add-btn">Add Movie<i class="add-icon"></i></button>
+      <ul class="cards">
+        <% if (!movies.length){ %>
+          <h3 id="no-movies">No Movies. Create a new one</h3>
+        <% } %>
+        <% movies.forEach(function(movie){ %>
+          <%- include('partials/movie', { movie: movie, id: movie.id, canModify: true }); %>
+        <% }); %>
+      </ul>
+  </main>
+  <script src="/scripts/dashboard.js" defer></script>
+<%- include('partials/footer'); %>

@@ -1,0 +1,21 @@
+<body>
+  <header class="header">
+    <a class="logo" href="/"><%= title.split('|')[0] %></a>
+    <nav class="nav">
+      <ul class="links">
+        <li class="nav-link"><a href="/">Movies</a></li>
+        <% if (!user) {%>
+        <li class="nav-link"><a href="/login">Login</a></li>
+        <li class="nav-link"><a href="/register">Sign Up</a></li>
+        <% } else {%>
+        <li class="nav-link greeting">Hi, <%= user %></li>
+        <li class="nav-link"><a href="/my-movies">My Movies</a></li>
+        <li class="nav-link"><a href="/logout">Sign Out</a></li>
+      </ul>
+      <% } %>
+    </nav>
+    <label class="switch" for="darkmode">
+      <input type="checkbox" id="darkmode" name="darkmode" />
+      <span class="slider round"></span>
+    </label>
+  </header>

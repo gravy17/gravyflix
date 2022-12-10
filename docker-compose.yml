@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      args:
+      - NODE_ENV=production
+      context: .
+    command: yarn start
+    env_file:
+      - .env
+    ports:
+      - 80:80
+    networks:
+      - public
+networks:
+  public:
+  
