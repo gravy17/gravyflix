@@ -1,3 +1,4 @@
+# syntax = docker/dockerfile:1.2
 FROM node:gallium-alpine3.16
 
 # Environment variables
@@ -24,5 +25,7 @@ COPY --chown=node:node . .
 
 # Will make port 80 available for external connections at runtime
 EXPOSE 80
+
+RUN --mount=type=secret,id=_env,dst=/etc/secrets/.env cat /etc/secrets/.env
 
 CMD [ "node", "./bin/www" ]
