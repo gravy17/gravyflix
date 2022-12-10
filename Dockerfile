@@ -13,8 +13,6 @@ WORKDIR /home/node/app
 # Copy package.json and package-lock.json to working directory
 COPY package*.json ./
 
-RUN touch database.sqlite
-
 # Set ownership for files to be added to working directory
 USER node
 
