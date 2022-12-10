@@ -10,7 +10,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - /database.sqlite:/home/node/app/database.sqlite
+      - ./database.sqlite:/home/node/app/database.sqlite
     networks:
       - public
 networks:
