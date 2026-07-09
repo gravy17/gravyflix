@@ -11,7 +11,7 @@ import usersRouter from "./routes/users";
 const APP_NAME = process.env.APP_NAME;
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
-mongoose.set("bufferCommands", false);
+mongoose.set("bufferCommands", true);
 mongoose.set('strictQuery', false);
 
 // Connect to MongoDB
