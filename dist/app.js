@@ -16,6 +16,7 @@ const APP_NAME = process.env.APP_NAME;
 const MONGODB_URI = process.env.MONGODB_URI;
 mongoose_1.default.set("bufferCommands", false);
 mongoose_1.default.set('strictQuery', false);
+// Connect to MongoDB
 mongoose_1.default.connect(MONGODB_URI, {}, (err) => {
     if (err) {
         console.log("Error connecting to db: ", err);

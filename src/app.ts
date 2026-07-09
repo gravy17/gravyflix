@@ -14,15 +14,16 @@ const MONGODB_URI = process.env.MONGODB_URI as string;
 mongoose.set("bufferCommands", false);
 mongoose.set('strictQuery', false);
 
-mongoose.connect (
+// Connect to MongoDB
+mongoose.connect(
   MONGODB_URI,
   {},
   (err) => {
-      if (err) {
-          console.log("Error connecting to db: ", err);
-      } else {
-          console.log(`Connected to MongoDB @ ${process.env.MONGODB_URI}`);
-      }
+    if (err) {
+      console.log("Error connecting to db: ", err);
+    } else {
+      console.log(`Connected to MongoDB @ ${process.env.MONGODB_URI}`);
+    }
   }
 );
 const app = express();
