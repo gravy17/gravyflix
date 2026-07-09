@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:1.2
-FROM node:gallium-alpine3.16
+FROM node:20-alpine
 
 # Environment variables
 ENV NODE_ENV=production
