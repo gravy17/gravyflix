@@ -1,31 +1,32 @@
 <li data-key="<%= movie.id %>">
   <a href="/<%= movie.id %>" class="card">
-    <img
-      src="<%= movie.image || '/images/default-movie.jpg' %>"
-      class="card__image"
-      alt="image for <%= movie.title %>"
-    />
-    <div class="card__overlay">
-      <div class="card__header">
-        <svg class="card__arc" xmlns="http://www.w3.org/2000/svg">
-          <path d="M 40 80 c 40 0 40 -40 40 -40 v 40 Z" />
-        </svg>
-        <% if(canModify) { %>
-        <span class="modifybtns">
-          <button class="edit-btn" data-edit="<%= movie.id %>">
-            Edit Movie<i class="edit-icon"></i>
-          </button>
-          <button class="delete-btn" data-delete="<%= movie.id %>">
-            Delete Movie<i class="delete-icon"></i>
-          </button>
-        </span>
-        <% } %>
+    <div class="card__media">
+      <object data="<%= movie.image %>" type="image/jpeg" class="card__image">
+        <img src="/images/default-movie.jpg" class="card__image" alt="Image for <%= movie.title %>" />
+      </object>
+    </div>
+    <div class="card__content">
+      <div class="card__heading">
         <div class="card__header-text">
-          <h3 class="movie__title"><%= movie.title %></h3>
-          <span>₦</span><span class="movie__price"><%= movie.price %></span>
+          <h3 class="movie__title">
+            <%= movie.title %>
+          </h3>
+          <span class="movie__price">₦<%= movie.price %></span>
         </div>
+        <% if(canModify) { %>
+          <span class="modifybtns">
+            <button class="edit-btn" data-edit="<%= movie.id %>">
+              <span>Edit</span><i class="edit-icon"></i>
+            </button>
+            <button class="delete-btn" data-delete="<%= movie.id %>">
+              <span>Delete</span><i class="delete-icon"></i>
+            </button>
+          </span>
+          <% } %>
       </div>
-      <p class="movie__description"><%= movie.description %></p>
+      <p class="movie__description">
+        <%= movie.description %>
+      </p>
     </div>
   </a>
 </li>

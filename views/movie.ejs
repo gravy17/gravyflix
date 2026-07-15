@@ -1,13 +1,89 @@
-<%- include('partials/head', { title: movie.title+'|'+title }); %> <%-
-include('partials/header', { title, user }); %>
-<main class="page-content">
-  <h1><%= movie.title %></h1>
-  <h2>₦<%= movie.price %></h2>
-  <img
-    src="<%= movie.image || '/images/default-movie.jpg' %>"
-    class="card__image"
-    alt="image for <%= movie.title %>"
-  />
-  <h3><%= movie.description %></h3>
-</main>
-<%- include('partials/footer'); %>
+<%
+  /*
+    The data model only sends { id, title, price, description, image } today.
+    These fallbacks let the card show the full marketplace concept (format,
+    condition, seller, trade status) right now, and switch over to real
+    values automatically the moment the API starts returning them --
+    nothing here needs to change on that day.
+  */
+  const formatOptions = ['16mm reel', 'VHS', 'Laserdisc', 'Blu-ray', 'DVD'];
+  const conditionOptions = [
+    { label: 'Mint', filled: 5 },
+    { label: 'Near mint', filled: 4 },
+    { label: 'Very good+', filled: 3 },
+    { label: 'Very good', filled: 2 },
+    { label: 'Good', filled: 1 }
+  ];
+  const sellerHandles = ['ReelArchive_Lagos', 'VintageFrames', 'OrsonCollector', 'CourtroomClassics', 'FilmCanisters_NG', 'FrameByFrame'];
+  const sellerCities = ['Lagos, NG', 'Abuja, NG', 'Ibadan, NG', 'Enugu, NG', 'Kano, NG'];
+
+  const seed = Number(movie.id) || 0;
+  const format = movie.format || formatOptions[seed % formatOptions.length];
+  const formatSlug = format.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  const condition = movie.condition || conditionOptions[seed % conditionOptions.length];
+  const sellerName = movie.seller || sellerHandles[seed % sellerHandles.length];
+  const sellerLocation = movie.sellerLocation || sellerCities[seed % sellerCities.length];
+  const openToTrade = movie.openToTrade !== undefined ? movie.openToTrade : (seed % 2 === 0);
+  const initials = sellerName.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'GF';
+%>
+<li data-key="<%= movie.id %>">
+  <a href="/<%= movie.id %>" class="card" data-format="<%= formatSlug %>">
+    <div class="card__media">
+      <object data="<%= movie.image %>" type="image/jpeg" class="card__image">
+        <img src="/images/default-movie.jpg" class="card__image" alt="Image for <%= movie.title %>" />
+      </object>
+      <span class="badge badge-format"><%= format %></span>
+      <% if (openToTrade) { %>
+        <span class="badge badge-trade">Open to trade</span>
+      <% } %>
+    </div>
+    <div class="card__content">
+      <div class="card__heading">
+        <div class="card__header-text">
+          <p class="movie__catalog">Cat. #<%= movie.id %></p>
+          <h3 class="movie__title">
+            <%= movie.title %>
+          </h3>
+        </div>
+        <% if(canModify) { %>
+          <span class="modifybtns">
+            <button class="edit-btn" data-edit="<%= movie.id %>">
+              <span>Edit</span><i class="edit-icon"></i>
+            </button>
+            <button class="delete-btn" data-delete="<%= movie.id %>">
+              <span>Delete</span><i class="delete-icon"></i>
+            </button>
+          </span>
+        <% } %>
+      </div>
+      <p class="movie__description">
+        <%= movie.description %>
+      </p>
+      <div class="condition-row">
+        <div class="condition-bar">
+          <% for (let i = 1; i <= 5; i++) { %>
+            <span class="<%= i <= condition.filled ? 'filled' : '' %>"></span>
+          <% } %>
+        </div>
+        <span class="condition-label"><%= condition.label %></span>
+      </div>
+      <% if (!canModify) { %>
+        <div class="seller-row">
+          <div class="avatar"><%= initials %></div>
+          <div>
+            <div class="seller-name"><%= sellerName %></div>
+            <div class="seller-loc"><%= sellerLocation %></div>
+          </div>
+        </div>
+      <% } %>
+      <div class="price-row">
+        <span class="movie__price">₦<%= movie.price %></span>
+        <% if (canModify) { %>
+          <span class="status-pill">Live listing</span>
+        <% } else { %>
+          <span class="view-pill"><%= openToTrade ? 'Propose trade' : 'Buy now' %></span>
+        <% } %>
+      </div>
+    </div>
+  </a>
+</li>

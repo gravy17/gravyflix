@@ -34,6 +34,13 @@
 
   <main class="page-content">
       <h2>Your movies</h2>
+      <p class="dashboard-sub">
+        <% if (movies.length) { %>
+          <%= movies.length %> title<%= movies.length === 1 ? '' : 's' %> listed on the marketplace.
+        <% } else { %>
+          Nothing listed yet — add your first title below.
+        <% } %>
+      </p>
       <button class="add-btn">Add Movie<i class="add-icon"></i></button>
       <ul class="cards">
         <% if (!movies.length){ %>

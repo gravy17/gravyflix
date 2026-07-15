@@ -1,13 +1,31 @@
 <%- include('partials/head', { title }); %> <%- include('partials/header', {
 title, user }); %>
 <main class="page-content">
-  <h1>Welcome to <%= title.split('|')[0] %></h1>
+  <div class="hero">
+    <h1>Trade the film collection you've been building for decades.</h1>
+    <p>Buy, sell, and swap physical prints, reels, and discs with collectors who actually know what a Steenbeck is.</p>
+    <div class="stat-row">
+      <div class="stat"><b><%= movies.length %></b><span>Listings live now</span></div>
+    </div>
+  </div>
+
   <h2>Latest Movies</h2>
+  <% if (!movies.length){ %>
+  <h3>No Movies To Buy. Login to add movies</h3>
+  <% } else { %>
+  <div class="filters" id="format-filters">
+    <button class="chip active" data-format="all">All formats</button>
+    <button class="chip" data-format="16mm-reel">16mm reel</button>
+    <button class="chip" data-format="vhs">VHS</button>
+    <button class="chip" data-format="laserdisc">Laserdisc</button>
+    <button class="chip" data-format="blu-ray">Blu-ray</button>
+    <button class="chip" data-format="dvd">DVD</button>
+  </div>
+  <% } %>
   <ul class="cards">
-    <% if (!movies.length){ %>
-    <h3>No Movies To Buy. Login to add movies</h3>
-    <% } %> <% movies.forEach(function(movie){ %> <%- include('partials/movie',
+    <% movies.forEach(function(movie){ %> <%- include('partials/movie',
     { movie, id: movie.id, canModify: false }); %> <% }); %>
   </ul>
 </main>
+<script src="/scripts/filters.js" defer></script>
 <%- include('partials/footer'); %>
