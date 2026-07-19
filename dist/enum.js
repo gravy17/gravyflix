@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.TradeStatusEnum = exports.ListingTypeEnum = exports.ConditionEnum = exports.FormatEnum = void 0;
+const FormatEnum = ["dvd", "blu-ray", "vhs", "laserdisc", "16mm-reel", "digital"];
+exports.FormatEnum = FormatEnum;
+const ConditionEnum = ["Mint", "Near Mint", "Very Good", "Fair", "Poor"];
+exports.ConditionEnum = ConditionEnum;
+const ListingTypeEnum = ['Sale', 'Trade', 'Both'];
+exports.ListingTypeEnum = ListingTypeEnum;
+const TradeStatusEnum = ['in-progress', 'completed'];
+exports.TradeStatusEnum = TradeStatusEnum;

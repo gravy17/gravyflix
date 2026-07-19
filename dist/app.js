@@ -10,8 +10,12 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const morgan_1 = __importDefault(require("morgan"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const pages_1 = __importDefault(require("./routes/pages"));
-const movies_1 = __importDefault(require("./routes/movies"));
+const movie_1 = __importDefault(require("./routes/movie"));
 const users_1 = __importDefault(require("./routes/users"));
+const sales_1 = __importDefault(require("./routes/sales"));
+const trades_1 = __importDefault(require("./routes/trades"));
+const stats_1 = __importDefault(require("./routes/stats"));
+const mockpay_provider_1 = __importDefault(require("./routes/mockpay-provider"));
 const APP_NAME = process.env.APP_NAME;
 const MONGODB_URI = process.env.MONGODB_URI;
 mongoose_1.default.set("bufferCommands", true);
@@ -36,7 +40,11 @@ app.use((0, cookie_parser_1.default)());
 app.use(express_1.default.static(path_1.default.join(__dirname, "..", "public")));
 app.use("/", pages_1.default);
 app.use("/api", users_1.default);
-app.use("/api/movies", movies_1.default);
+app.use("/api/movies", movie_1.default);
+app.use("/api/sales", sales_1.default);
+app.use("/api/trades", trades_1.default);
+app.use("/api/stats", stats_1.default);
+app.use("/mockpay-provider", mockpay_provider_1.default);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next((0, http_errors_1.default)(404));

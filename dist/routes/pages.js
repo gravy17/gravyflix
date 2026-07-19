@@ -2,11 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const pages_1 = require("../controllers/pages");
+const trades_1 = require("../controllers/trades");
+const sales_1 = require("../controllers/sales");
+const mockpay_1 = require("../controllers/mockpay");
 const router = (0, express_1.Router)();
 router.get("/", pages_1.renderHome);
 router.get("/my-movies", pages_1.renderDashboard);
 router.get("/login", pages_1.renderLogin);
 router.get("/register", pages_1.renderSignup);
 router.get("/logout", pages_1.handleLogout);
+router.get("/trades/:id", trades_1.renderTrade);
+router.get("/sales/:id", sales_1.renderSale);
+router.get("/sales/:id/complete", sales_1.completePurchase);
+router.get("/mockpay/checkout", mockpay_1.renderMockpayCheckout);
 router.get("/:id", pages_1.renderMovie);
 exports.default = router;

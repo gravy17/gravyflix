@@ -1,0 +1,41 @@
+<%- include('partials/head', { title }); %>
+<body data-theme="light">
+  <div class="mockpay-page">
+    <div class="mockpay-page__bar">MockPay</div>
+    <div class="modal-card mockpay-page__card">
+      <h2>Complete your payment</h2>
+      <div class="listing-summary">
+        <div>
+          <p class="listing-summary__title">Payment request</p>
+          <p class="listing-summary__meta">Ref: <%= reference %></p>
+        </div>
+        <span class="listing-summary__price">₦<%= amount %></span>
+      </div>
+      <div class="mockpay">
+        <div class="mockpay__brand">
+          <span>MockPay</span>
+          <span class="mockpay__badge">Test mode</span>
+        </div>
+        <div class="input-group">
+          <label for="mockpay-card">Card number</label>
+          <input type="text" id="mockpay-card" placeholder="4242 4242 4242 4242" value="4242 4242 4242 4242">
+        </div>
+        <div class="mockpay__row">
+          <div class="input-group">
+            <label for="mockpay-expiry">Expiry</label>
+            <input type="text" id="mockpay-expiry" placeholder="MM/YY" value="12/29">
+          </div>
+          <div class="input-group">
+            <label for="mockpay-cvv">CVV</label>
+            <input type="text" id="mockpay-cvv" placeholder="123" value="123">
+          </div>
+        </div>
+        <button class="button mockpay__pay" id="mockpay-pay" data-reference="<%= reference %>" data-callback="<%= callbackUrl %>">Pay ₦<%= amount %></button>
+        <button class="button button--ghost" id="mockpay-cancel" type="button">Cancel</button>
+      </div>
+      <p class="modal-disclaimer">Simulated MockPay checkout for testing — no real payment is processed.</p>
+    </div>
+  </div>
+  <script src="/scripts/mockpay.js" defer></script>
+</body>
+</html>

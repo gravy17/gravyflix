@@ -1,0 +1,35 @@
+<%- include('partials/head', { title }); %>
+<%- include('partials/header', { title, user }); %>
+<main class="page-content listing-page">
+  <a href="/my-movies" class="back-link">&larr; Back to your dashboard</a>
+
+  <div class="trade-detail">
+    <p class="trade-detail__label">Purchase receipt</p>
+
+    <div class="listing-summary">
+      <img class="listing-summary__image" src="<%= (sale.movie && sale.movie.image) || '/images/default-movie.jpg' %>" alt="">
+      <div>
+        <p class="listing-summary__title"><%= sale.movie ? sale.movie.title : 'Movie' %></p>
+        <p class="listing-summary__meta"><%= sale.movie ? [sale.movie.format, sale.movie.condition].filter(Boolean).join(' · ') : '' %></p>
+      </div>
+      <span class="listing-summary__price">₦<%= sale.valueAmount %></span>
+    </div>
+
+    <p class="dashboard-sub">Transaction ID: <%= sale.transactionId %></p>
+
+    <% if (sale.seller) { %>
+    <div class="seller-card">
+      <div class="avatar avatar--lg"><%= (sale.seller.username || sale.seller.fullname || 'GF').replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() %></div>
+      <div>
+        <div class="seller-name"><%= sale.seller.username || sale.seller.fullname %></div>
+        <div class="seller-meta">
+          <% if (sale.seller.city || sale.seller.country_code) { %>
+            <span><%= [sale.seller.city, sale.seller.country_code].filter(Boolean).join(', ') %></span>
+          <% } %>
+        </div>
+      </div>
+    </div>
+    <% } %>
+  </div>
+</main>
+<%- include('partials/footer'); %>

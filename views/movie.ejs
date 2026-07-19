@@ -1,89 +1,168 @@
 <%
   /*
-    The data model only sends { id, title, price, description, image } today.
-    These fallbacks let the card show the full marketplace concept (format,
-    condition, seller, trade status) right now, and switch over to real
-    values automatically the moment the API starts returning them --
-    nothing here needs to change on that day.
+    Single-listing view, rendered by GET /:id with locals:
+    { title, user, movie, canModify }.
+    movie.createdBy is assumed populated (username/fullname, city,
+    country_code, rating); everything degrades gracefully if it isn't.
   */
-  const formatOptions = ['16mm reel', 'VHS', 'Laserdisc', 'Blu-ray', 'DVD'];
-  const conditionOptions = [
-    { label: 'Mint', filled: 5 },
-    { label: 'Near mint', filled: 4 },
-    { label: 'Very good+', filled: 3 },
-    { label: 'Very good', filled: 2 },
-    { label: 'Good', filled: 1 }
-  ];
-  const sellerHandles = ['ReelArchive_Lagos', 'VintageFrames', 'OrsonCollector', 'CourtroomClassics', 'FilmCanisters_NG', 'FrameByFrame'];
-  const sellerCities = ['Lagos, NG', 'Abuja, NG', 'Ibadan, NG', 'Enugu, NG', 'Kano, NG'];
+  const conditionGrade = { 'Mint': 5, 'Near Mint': 4, 'Very Good': 3, 'Fair': 2, 'Poor': 1 };
+  const conditionFilled = movie.condition ? (conditionGrade[movie.condition] || 0) : 0;
 
-  const seed = Number(movie.id) || 0;
-  const format = movie.format || formatOptions[seed % formatOptions.length];
-  const formatSlug = format.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-  const condition = movie.condition || conditionOptions[seed % conditionOptions.length];
-  const sellerName = movie.seller || sellerHandles[seed % sellerHandles.length];
-  const sellerLocation = movie.sellerLocation || sellerCities[seed % sellerCities.length];
-  const openToTrade = movie.openToTrade !== undefined ? movie.openToTrade : (seed % 2 === 0);
-  const initials = sellerName.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() || 'GF';
+  const openToTrade = movie.listingType === 'Trade' || movie.listingType === 'Both';
+  const canBuy = movie.listingType === 'Sale' || movie.listingType === 'Both' || !movie.listingType;
+  const isInactive = movie.active === false;
+
+  const seller = (movie.createdBy && typeof movie.createdBy === 'object')
+    ? (movie.createdBy.username || movie.createdBy.fullname)
+    : null;
+  const sellerCity = (movie.createdBy && typeof movie.createdBy === 'object') ? movie.createdBy.city : null;
+  const sellerCountry = (movie.createdBy && typeof movie.createdBy === 'object') ? movie.createdBy.country_code : null;
+  const sellerLocation = [sellerCity, sellerCountry].filter(Boolean).join(', ') || null;
+  const sellerRating = (movie.createdBy && typeof movie.createdBy === 'object') ? movie.createdBy.rating : null;
+  const sellerInitials = seller ? seller.replace(/[^A-Za-z]/g, '').slice(0, 2).toUpperCase() : 'GF';
+
+  function timeAgo(date) {
+    if (!date) return null;
+    const diffMs = Date.now() - new Date(date).getTime();
+    const day = Math.floor(diffMs / 86400000);
+    if (day >= 30) { const mo = Math.floor(day / 30); return mo + ' month' + (mo === 1 ? '' : 's') + ' ago'; }
+    if (day >= 1) return day + ' day' + (day === 1 ? '' : 's') + ' ago';
+    const hr = Math.floor(diffMs / 3600000);
+    if (hr >= 1) return hr + ' hour' + (hr === 1 ? '' : 's') + ' ago';
+    return 'today';
+  }
+  const listedAt = timeAgo(movie.createdAt);
+  const catalogCode = movie.id ? String(movie.id).slice(-6).toUpperCase() : null;
 %>
-<li data-key="<%= movie.id %>">
-  <a href="/<%= movie.id %>" class="card" data-format="<%= formatSlug %>">
-    <div class="card__media">
-      <object data="<%= movie.image %>" type="image/jpeg" class="card__image">
-        <img src="/images/default-movie.jpg" class="card__image" alt="Image for <%= movie.title %>" />
+<%- include('partials/head', { title }); %>
+<%- include('partials/header', { title, user }); %>
+<main class="page-content listing-page">
+  <a href="/" class="back-link">&larr; Back to marketplace</a>
+
+  <div class="listing">
+    <div class="listing__media">
+      <object data="<%= movie.image %>" type="image/jpeg" class="listing__image">
+        <img src="/images/default-movie.jpg" class="listing__image" alt="Image for <%= movie.title %>" />
       </object>
-      <span class="badge badge-format"><%= format %></span>
-      <% if (openToTrade) { %>
+      <% if (movie.format) { %>
+        <span class="badge badge-format"><%= movie.format %></span>
+      <% } %>
+      <% if (!isInactive && openToTrade) { %>
         <span class="badge badge-trade">Open to trade</span>
       <% } %>
     </div>
-    <div class="card__content">
-      <div class="card__heading">
-        <div class="card__header-text">
-          <p class="movie__catalog">Cat. #<%= movie.id %></p>
-          <h3 class="movie__title">
-            <%= movie.title %>
-          </h3>
+
+    <div class="listing__info">
+      <% if (catalogCode) { %><p class="movie__catalog">Cat. #<%= catalogCode %></p><% } %>
+      <h1><%= movie.title %></h1>
+
+      <% if (movie.condition) { %>
+        <div class="condition-row">
+          <div class="condition-bar">
+            <% for (let i = 1; i <= 5; i++) { %>
+              <span class="<%= i <= conditionFilled ? 'filled' : '' %>"></span>
+            <% } %>
+          </div>
+          <span class="condition-label"><%= movie.condition %></span>
         </div>
-        <% if(canModify) { %>
-          <span class="modifybtns">
-            <button class="edit-btn" data-edit="<%= movie.id %>">
-              <span>Edit</span><i class="edit-icon"></i>
-            </button>
-            <button class="delete-btn" data-delete="<%= movie.id %>">
-              <span>Delete</span><i class="delete-icon"></i>
-            </button>
-          </span>
-        <% } %>
-      </div>
-      <p class="movie__description">
-        <%= movie.description %>
-      </p>
-      <div class="condition-row">
-        <div class="condition-bar">
-          <% for (let i = 1; i <= 5; i++) { %>
-            <span class="<%= i <= condition.filled ? 'filled' : '' %>"></span>
-          <% } %>
+      <% } %>
+
+      <p class="listing__price">₦<%= movie.price %></p>
+
+      <% if (movie.description) { %>
+        <p class="listing__description"><%= movie.description %></p>
+      <% } %>
+
+      <% if (canModify) { %>
+        <div class="listing__actions">
+          <a href="/my-movies" class="button button--ghost">Manage in your dashboard</a>
         </div>
-        <span class="condition-label"><%= condition.label %></span>
-      </div>
-      <% if (!canModify) { %>
-        <div class="seller-row">
-          <div class="avatar"><%= initials %></div>
+      <% } else if (isInactive) { %>
+        <p class="dashboard-empty">This listing is no longer available.</p>
+      <% } else { %>
+        <div class="listing__actions">
+          <% if (canBuy) { %><button class="button" id="open-buy-modal" data-buy="<%= movie.id %>">Buy now</button><% } %>
+          <% if (openToTrade) { %><button class="button button--ghost" id="open-trade-modal" data-trade="<%= movie.id %>">Propose trade</button><% } %>
+        </div>
+      <% } %>
+
+      <% if (seller || listedAt) { %>
+        <div class="seller-card">
+          <% if (seller) { %><div class="avatar avatar--lg"><%= sellerInitials %></div><% } %>
           <div>
-            <div class="seller-name"><%= sellerName %></div>
-            <div class="seller-loc"><%= sellerLocation %></div>
+            <% if (seller) { %><div class="seller-name"><%= seller %></div><% } %>
+            <div class="seller-meta">
+              <% if (sellerLocation) { %><span><%= sellerLocation %></span><% } %>
+              <% if (sellerRating) { %>
+                <span class="seller-rating"><%= sellerRating %>/100</span>
+              <% } %>
+              <% if (listedAt) { %><span>Listed <%= listedAt %></span><% } %>
+            </div>
           </div>
         </div>
       <% } %>
-      <div class="price-row">
-        <span class="movie__price">₦<%= movie.price %></span>
-        <% if (canModify) { %>
-          <span class="status-pill">Live listing</span>
-        <% } else { %>
-          <span class="view-pill"><%= openToTrade ? 'Propose trade' : 'Buy now' %></span>
-        <% } %>
+    </div>
+  </div>
+
+  <% if (!canModify && !isInactive) { %>
+  <div class="modal-backdrop" id="buy-modal">
+    <div class="modal-card">
+      <button class="modal-close" id="buy-modal-close" aria-label="Close">&times;</button>
+      <h2>Complete your purchase</h2>
+      <div class="listing-summary">
+        <img class="listing-summary__image" src="<%= movie.image || '/images/default-movie.jpg' %>" alt="">
+        <div>
+          <p class="listing-summary__title"><%= movie.title %></p>
+          <p class="listing-summary__meta"><%= [movie.format, movie.condition].filter(Boolean).join(' · ') %></p>
+        </div>
+        <span class="listing-summary__price">₦<%= movie.price %></span>
+      </div>
+      <div class="mockpay">
+        <div class="mockpay__brand">
+          <span>MockPay</span>
+          <span class="mockpay__badge">Test mode</span>
+        </div>
+        <p class="modal-disclaimer" style="text-align:left; margin: 0 0 4px;">You'll enter payment details on MockPay's secure checkout.</p>
+        <button class="button mockpay__pay" id="mockpay-continue" data-movie="<%= movie.id %>">Continue to MockPay</button>
+      </div>
+      <p class="modal-disclaimer">Simulated payment via MockPay — no real charge is made.</p>
+    </div>
+  </div>
+
+  <% if (openToTrade) { %>
+  <div class="modal-backdrop" id="trade-modal">
+    <div class="modal-card">
+      <button class="modal-close" id="trade-modal-close" aria-label="Close">&times;</button>
+      <h2>Propose a trade</h2>
+      <div class="listing-summary">
+        <img class="listing-summary__image" src="<%= movie.image || '/images/default-movie.jpg' %>" alt="">
+        <div>
+          <p class="listing-summary__title"><%= movie.title %></p>
+          <p class="listing-summary__meta"><%= [movie.format, movie.condition].filter(Boolean).join(' · ') %></p>
+        </div>
+      </div>
+      <% if (seller) { %>
+      <div class="trade-seller">
+        <div class="avatar"><%= sellerInitials %></div>
+        <div>
+          <p class="seller-name"><%= seller %></p>
+          <% if (sellerLocation) { %><p class="seller-meta"><%= sellerLocation %></p><% } %>
+        </div>
+      </div>
+      <% } %>
+      <div class="input-group">
+        <label for="buyer-movie-select">Offer one of your movies</label>
+        <select id="buyer-movie-select">
+          <option value="">Loading your catalog…</option>
+        </select>
+      </div>
+      <div class="left-aligned">
+        <button class="button" id="trade-submit" data-movie="<%= movie.id %>">Send trade proposal</button>
       </div>
     </div>
-  </a>
-</li>
+  </div>
+  <% } %>
+  <% } %>
+</main>
+<script src="/scripts/listing.js" defer></script>
+<%- include('partials/footer'); %>

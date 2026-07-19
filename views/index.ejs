@@ -15,17 +15,18 @@ title, user }); %>
   <% } else { %>
   <div class="filters" id="format-filters">
     <button class="chip active" data-format="all">All formats</button>
-    <button class="chip" data-format="16mm-reel">16mm reel</button>
-    <button class="chip" data-format="vhs">VHS</button>
-    <button class="chip" data-format="laserdisc">Laserdisc</button>
-    <button class="chip" data-format="blu-ray">Blu-ray</button>
     <button class="chip" data-format="dvd">DVD</button>
+    <button class="chip" data-format="blu-ray">Blu-ray</button>
+    <button class="chip" data-format="vhs">VHS</button>
+    <button class="chip" data-format="laserdisc">LaserDisc</button>
+    <button class="chip" data-format="16mm-reel">16mm reel</button>
+    <button class="chip" data-format="digital">Digital</button>
   </div>
   <% } %>
-  <ul class="cards">
-    <% movies.forEach(function(movie){ %> <%- include('partials/movie',
+  <ul class="cards" id="movie-results">
+    <% movies.forEach(function(movie){ %> <%- include('partials/moviecard',
     { movie, id: movie.id, canModify: false }); %> <% }); %>
   </ul>
 </main>
-<script src="/scripts/filters.js" defer></script>
+<script src="/scripts/index.js" defer></script>
 <%- include('partials/footer'); %>

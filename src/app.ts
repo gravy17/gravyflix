@@ -6,8 +6,13 @@ import logger from "morgan";
 import mongoose from 'mongoose';
 
 import pagesRouter from "./routes/pages";
-import moviesRouter from "./routes/movies";
+import moviesRouter from "./routes/movie";
 import usersRouter from "./routes/users";
+import salesRouter from "./routes/sales";
+import tradesRouter from "./routes/trades";
+import statsRouter from "./routes/stats";
+import mockpayProviderRouter from "./routes/mockpay-provider";
+
 const APP_NAME = process.env.APP_NAME;
 const MONGODB_URI = process.env.MONGODB_URI as string;
 
@@ -41,6 +46,10 @@ app.use(express.static(path.join(__dirname, "..", "public")));
 app.use("/", pagesRouter);
 app.use("/api", usersRouter);
 app.use("/api/movies", moviesRouter);
+app.use("/api/sales", salesRouter);
+app.use("/api/trades", tradesRouter);
+app.use("/api/stats", statsRouter);
+app.use("/mockpay-provider", mockpayProviderRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

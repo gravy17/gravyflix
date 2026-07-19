@@ -1,7 +1,7 @@
 import request from "supertest";
 process.env.JWT_SECRET = "secret";
 import app from "../src/app";
-import { Users } from "../src/models/User";
+import Users from "../src/models/User";
 
 let cookie: string;
 let created: string;

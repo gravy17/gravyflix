@@ -1,5 +1,5 @@
 <%- include('partials/head', { title }); %>
-  <%- include('partials/header', { title, user }); %>
+  <%- include('partials/header', { title, user, userId }); %>
   <div id="bodyoverlay"></div>
   
   <section id="deletewarning" class="card deletewarning">
@@ -28,28 +28,76 @@
           placeholder="Description"></div>
       <div class="input-group"><label for="image">Image URL: </label><input name="image" type="text"
           placeholder="URL for the image"></div>
+      <div class="input-group"><label for="format">Format: </label>
+        <select name="format">
+          <option value="">Select a format</option>
+          <option value="DVD">DVD</option>
+          <option value="Blu-ray">Blu-ray</option>
+          <option value="VHS">VHS</option>
+          <option value="LaserDisc">LaserDisc</option>
+          <option value="16mm reel">16mm reel</option>
+          <option value="Digital">Digital</option>
+        </select>
+      </div>
+      <div class="input-group"><label for="condition">Condition: </label>
+        <select name="condition">
+          <option value="">Select a condition</option>
+          <option value="Mint">Mint</option>
+          <option value="Near Mint">Near Mint</option>
+          <option value="Very Good">Very Good</option>
+          <option value="Fair">Fair</option>
+          <option value="Poor">Poor</option>
+        </select>
+      </div>
+      <div class="input-group"><label for="listingType">Listing type: </label>
+        <select name="listingType">
+          <option value="Sale">For sale</option>
+          <option value="Trade">Open to trade</option>
+          <option value="Both">Sale or trade</option>
+        </select>
+      </div>
       <div class="left-aligned"><input type="button" id="editSubmit" class="button"></div>
     </form>
   </section>
 
   <main class="page-content">
-      <h2>Your movies</h2>
-      <p class="dashboard-sub">
-        <% if (movies.length) { %>
-          <%= movies.length %> title<%= movies.length === 1 ? '' : 's' %> listed on the marketplace.
-        <% } else { %>
-          Nothing listed yet — add your first title below.
-        <% } %>
-      </p>
-      <button class="add-btn">Add Movie<i class="add-icon"></i></button>
-      <ul class="cards">
-        <% if (!movies.length){ %>
-          <h3 id="no-movies">No Movies. Create a new one</h3>
-        <% } %>
-        <% movies.forEach(function(movie){ %>
-          <%- include('partials/movie', { movie: movie, id: movie.id, canModify: true }); %>
-        <% }); %>
-      </ul>
+      <section class="dashboard-section" id="trades-section">
+        <h2>Trades in progress</h2>
+        <p class="dashboard-sub" id="trades-loading">Loading…</p>
+        <ul class="trade-cards" id="trades-in-progress-list"></ul>
+      </section>
+
+      <section class="dashboard-section">
+        <h2>Your movies</h2>
+        <p class="dashboard-sub">
+          <% if (movies.length) { %>
+            <%= movies.length %> title<%= movies.length === 1 ? '' : 's' %> listed on the marketplace.
+          <% } else { %>
+            Nothing listed yet — add your first title below.
+          <% } %>
+        </p>
+        <button class="add-btn">Add Movie<i class="add-icon"></i></button>
+        <ul class="cards">
+          <% if (!movies.length){ %>
+            <h3 id="no-movies">No Movies. Create a new one</h3>
+          <% } %>
+          <% movies.forEach(function(movie){ %>
+            <%- include('partials/moviecard', { movie: movie, id: movie.id, canModify: true }); %>
+          <% }); %>
+        </ul>
+      </section>
+
+      <section class="dashboard-section" id="trades-completed-section">
+        <h2>Trades completed</h2>
+        <p class="dashboard-sub" id="trades-completed-loading">Loading…</p>
+        <ul class="cards" id="trades-completed-list"></ul>
+      </section>
+
+      <section class="dashboard-section" id="purchases-section">
+        <h2>Purchases completed</h2>
+        <p class="dashboard-sub" id="purchases-loading">Loading…</p>
+        <ul class="cards" id="purchases-completed-list"></ul>
+      </section>
   </main>
   <script src="/scripts/dashboard.js" defer></script>
 <%- include('partials/footer'); %>

@@ -1,0 +1,10 @@
+<%- include('partials/head', { title }); %>
+<%- include('partials/header', { title, user, userId }); %>
+<main class="page-content listing-page">
+  <a href="/my-movies" class="back-link">&larr; Back to your dashboard</a>
+  <div id="trade-detail-root" data-trade-id="<%= tradeId %>">
+    <p class="dashboard-sub">Loading trade…</p>
+  </div>
+</main>
+<script src="/scripts/trade.js" defer></script>
+<%- include('partials/footer'); %>

@@ -6,6 +6,8 @@ import { verify } from "jsonwebtoken";
 const title = process.env.APP_NAME;
 const secret = process.env.JWT_SECRET as string;
 
+const POPULATE_USER = "username fullname city country_code rating";
+
 const send404 = (req: Request, res: Response, err: any) => {
   return res.status(404).render("404", {
     status: 404,
@@ -17,6 +19,7 @@ const send404 = (req: Request, res: Response, err: any) => {
 };
 
 const send500 = (req: Request, res: Response, err: any) => {
+  console.error(err);
   return res.status(500).render("500", {
     status: 500,
     message:
@@ -57,7 +60,12 @@ export async function renderHome(
     const limit = Number(req.query?.limit as string) || 5;
     const offset = Number(req.query?.offset as string) || 0;
     const user = req.cookies.username;
-    const movies = await Movie.find({}).sort({ createdAt: 1 }).limit(limit).skip(offset);
+    // populate createdBy -- moviecard.ejs shows seller name/city/rating
+    const movies = await Movie.find({ active: { $ne: false } })
+      .sort({ createdAt: 1 })
+      .limit(limit)
+      .skip(offset)
+      .populate("createdBy", POPULATE_USER);
     if (!!movies.length){
       res.status(200).render("index", { movies, title: title + " | Home", user, limit, offset });
     } else  if (offset > 0) {
@@ -84,17 +92,19 @@ export async function renderDashboard(
       const verified = verify(token, secret);
       if (!!verified) {
         const { id } = verified as { [key: string]: string };
-   
+
         const movies = await Movie.find({ createdBy: id }).sort({ createdAt: 1 }).limit(limit).skip(offset);
         return res.status(200).render("dashboard", {
           title: title + " | Your Movies",
           user: username,
+          userId: id, // needed client-side to work out buyer vs seller role on trade cards
           movies,
-          limit, 
+          limit,
           offset
         });
       }
     }
+    res.status(401).redirect("/login");
   } catch (error) {
     console.error(error)
     return send500(req, res, error);
@@ -108,14 +118,35 @@ export async function renderMovie(
 ) {
   try {
     const { id } = req.params;
-    const movie = await Movie.findById(id);
+    // populate createdBy -- the listing page shows seller name/city/rating
+    const movie = await Movie.findById(id).populate("createdBy", POPULATE_USER);
     if (!movie) {
       return send404(req, res, { message: "Page Not Found" });
     }
+
+    // This page is public (anonymous visitors can view a listing), so we
+    // decode the cookie token ourselves rather than relying on the `auth`
+    // middleware, which 401s when there's no token. An expired/invalid
+    // token is treated as "not logged in" instead of blocking the page.
+    let viewerId: string | null = null;
+    if (req.cookies.token) {
+      try {
+        const verified = verify(req.cookies.token, secret) as { id: string };
+        viewerId = verified.id;
+      } catch (err) {
+        viewerId = null;
+      }
+    }
+
+    const ownerId = (movie.createdBy as any)?._id
+      ? (movie.createdBy as any)._id.toString()
+      : movie.createdBy?.toString();
+
     res.status(200).render("movie", {
       movie,
       title: title + " | " + movie.title,
       user: req.cookies.username,
+      canModify: !!viewerId && viewerId === ownerId,
     });
   } catch (error) {
     console.error(error)

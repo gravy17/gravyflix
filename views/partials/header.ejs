@@ -1,18 +1,18 @@
-<body>
+<body data-user="<%= user || '' %>" data-user-id="<%= locals.userId || '' %>">
   <header class="header">
     <a class="logo" href="/"><%= title.split('|')[0] %></a>
     <nav class="nav">
       <ul class="links">
-        <li class="nav-link"><a href="/">Movies</a></li>
+        <li class="nav-link"><a href="/">Browse</a></li>
         <% if (!user) {%>
-        <li class="nav-link"><a href="/login">Login</a></li>
-        <li class="nav-link"><a href="/register">Sign Up</a></li>
+        <li class="nav-link"><a href="/login">Sign in</a></li>
+        <li class="nav-link"><a href="/register" class="nav-cta">Get started</a></li>
         <% } else {%>
         <li class="nav-link greeting">Hi, <%= user %></li>
-        <li class="nav-link"><a href="/my-movies">My Movies</a></li>
-        <li class="nav-link"><a href="/logout">Sign Out</a></li>
+        <li class="nav-link"><a href="/my-movies">My listings</a></li>
+        <li class="nav-link"><a href="/logout">Sign out</a></li>
+        <% } %>
       </ul>
-      <% } %>
     </nav>
     <label class="switch" for="darkmode">
       <input type="checkbox" id="darkmode" name="darkmode" />
