@@ -95,7 +95,7 @@
             <% if (seller) { %>
               <div class="seller-name">
                 <%= seller %><% if (sellerLocation) { %> · <span class="seller-loc"><%= sellerLocation %></span><% } %>
-                <% if (sellerRating) { %><span class="seller-rating"><%= sellerRating %>/100</span><% } %>
+                <% if (sellerRating) { %><span class="seller-rating"><%= sellerRating %>%</span><% } %>
               </div>
             <% } %>
             <% if (listedAt) { %><div class="seller-meta"><%= listedAt %></div><% } %>

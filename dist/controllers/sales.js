@@ -116,15 +116,19 @@ async function buyMovie(req, res) {
         if (movie.createdBy.toString() === buyerId) {
             return res.status(400).json({ message: "You can't buy your own listing" });
         }
+        const transactionId = (0, crypto_1.randomUUID)();
+        const authorizationUrl = await (0, payment_1.initiatePayment)(buyer.email, movie.price, `${process.env.APP_URL}/sales/${transactionId}/complete`);
+        const params = new URL(authorizationUrl).searchParams;
+        const externalReference = params.get("reference");
         const sale = await Sale_1.default.create({
-            movie: movie._id,
+            movie: movie.id,
             seller_id: movie.createdBy,
             buyer_id: buyerId,
             value_amount: movie.price,
-            transaction_id: (0, crypto_1.randomUUID)(),
+            transaction_id: transactionId,
+            external_reference: externalReference,
             completed: false,
         });
-        const authorizationUrl = await (0, payment_1.initiatePayment)(buyer.email, movie.price, `${process.env.APP_URL}/sales/${sale.transaction_id}/complete`);
         return res.status(201).json({ sale: shapeSale(sale), authorizationUrl });
     }
     catch (error) {
@@ -135,10 +139,10 @@ async function buyMovie(req, res) {
 exports.buyMovie = buyMovie;
 async function completePurchase(req, res) {
     try {
-        const { id: transactionId } = req.params;
+        const { id } = req.params;
         const { reference } = req.query;
         const isVerified = await (0, payment_1.verifyPayment)(reference);
-        const sale = await Sale_1.default.findOne({ transaction_id: transactionId }).populate("movie").populate("seller_id", POPULATE_USER);
+        const sale = await Sale_1.default.findOne({ transaction_id: id }).populate("seller_id", POPULATE_USER);
         if (!sale) {
             return res.status(404).json({ message: "Transaction not found" });
         }
@@ -150,14 +154,13 @@ async function completePurchase(req, res) {
             return res.status(400).json({ message: "This listing is no longer for sale. Refund will be processed" });
         }
         if (isVerified) {
-            sale.external_reference = reference;
             sale.completed = isVerified;
             await sale.save();
             movie.active = false;
             movie.soldTo = sale.buyer_id;
             await movie.save();
         }
-        return res.status(200).json({ sale: shapeSale(sale) });
+        return res.redirect(`/sales/${sale.id}`);
     }
     catch (error) {
         console.error(error);

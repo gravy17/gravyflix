@@ -228,8 +228,9 @@ pre{
 /* ---------- Movie cards ---------- */
 .cards{
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 5fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 400px));
   gap: 20px;
+  justify-content: start;
   margin-top: 24px;
 }
 .card{
@@ -364,12 +365,13 @@ a.card:hover{ border-color: var(--ink-soft); transform: translateY(-2px); }
 }
 a.card:hover .view-pill{ background: var(--ink); color: var(--bg); }
 .status-pill{
+  display: inline-block;
   font-size: 11.5px;
   font-weight: 500;
+  padding: 5px 10px;
+  border-radius: 7px;
   color: var(--accent-text);
   background: var(--accent-soft);
-  border-radius: 7px;
-  padding: 5px 10px;
 }
 
 .modifybtns{ display: flex; gap: 6px; flex-shrink: 0; z-index: 1; }
@@ -442,6 +444,23 @@ a.card:hover .view-pill{ background: var(--ink); color: var(--bg); }
   transition: opacity .15s ease;
 }
 .button:hover, input[type="submit"]:hover, input[type="button"]:hover{ opacity: 0.85; }
+
+textarea{
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink);
+  outline: none;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color .15s ease;
+}
+textarea::placeholder{ color: var(--ink-faint); }
+textarea:focus{ border-color: var(--accent); }
+
 
 /* ---------- Dashboard: add button, editor, delete modal ---------- */
 .add-btn{
@@ -591,6 +610,229 @@ a.card:hover .view-pill{ background: var(--ink); color: var(--bg); }
 @media (max-width: 760px){
   .listing{ grid-template-columns: 1fr; }
 }
+
+/* ---------- Mockpay ------------- */
+.modal-backdrop{
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 15, 13, 0.5);
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 20px;
+}
+.modal-card{
+  position: relative;
+  width: min(420px, 100%);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.14);
+}
+
+
+.modal-card h2{ font-size: 18px; margin-bottom: 18px; padding-right: 24px; }
+.modal-close{
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+.modal-close:hover{ color: var(--ink); }
+.modal-disclaimer{
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  margin-top: 16px;
+  text-align: center;
+}
+
+/* listing summary strip */
+.listing-summary{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 10px;
+  margin-bottom: 18px;
+}
+.listing-summary__image{
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 7px;
+  flex-shrink: 0;
+  background: var(--bg);
+}
+.listing-summary__title{ font-family: var(--font-display); font-size: 14px; font-weight: 600; margin: 0; }
+.listing-summary__meta{ font-size: 12px; color: var(--ink-soft); margin: 2px 0 0; }
+.listing-summary__price{
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* MockPay panel */
+.mockpay{ display: flex; flex-direction: column; gap: 14px; }
+.mockpay__brand{ display: flex; align-items: center; justify-content: space-between; }
+.mockpay__brand span:first-child{ font-family: var(--font-display); font-weight: 600; font-size: 14px; }
+.mockpay__badge{
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+.mockpay__pay{ width: 100%; margin-top: 4px; }
+
+.mockpay-page{
+  min-height: 100vh;
+  background: var(--bg);
+}
+.mockpay-page__bar{
+  padding: 18px 32px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.mockpay-page__card{
+  position: static;
+  margin: 56px auto;
+  box-shadow: none;
+}
+
+/* ---------- Trades ---------- */
+.trade-cards{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+  margin-bottom: 32px;
+}
+.trade-card{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.trade-card:hover{ border-color: var(--ink-soft); transform: translateY(-2px); }
+.trade-card__pair{ display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.trade-card__thumb{
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border-radius: 7px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+.trade-card__arrow{ color: var(--ink-faint); font-size: 14px; }
+.trade-card__info{ min-width: 0; }
+.trade-card__title{
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  font-weight: 600;
+  margin: 0 0 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.trade-card__with{ font-size: 12px; color: var(--ink-soft); margin: 0 0 8px; }
+
+/* status pill -- now a single consolidated definition */
+.status-pill--pending{ background: var(--accent-soft); color: var(--accent-text); }
+.status-pill--action{ background: rgba(186,117,23,0.14); color: #854F0B; }
+[data-theme="dark"] .status-pill--action{ background: rgba(250,199,117,0.14); color: #FAC775; }
+.status-pill--sold{ background: var(--danger-soft); color: var(--danger); }
+
+/* ---------- Trade detail + rating ---------- */
+.trade-detail{ max-width: 480px; }
+.trade-detail__label{
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 8px;
+}
+.trade-detail__with{ font-size: 13px; color: var(--ink-soft); margin: 14px 0 20px; }
+ 
+.rating-widget{
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding-top: 20px;
+}
+.rating-widget p{ font-size: 14px; font-weight: 500; margin-bottom: 10px; }
+.rating-stars{ display: flex; gap: 4px; margin-bottom: 16px; }
+.rating-stars button{
+  background: none;
+  border: none;
+  font-size: 26px;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  color: var(--line);
+}
+.rating-stars button.filled{ color: var(--accent); }
+
+
+/* ---------- Sold / inactive listings ---------- */
+a.card.card--inactive{
+  opacity: 0.55;
+  filter: grayscale(0.4);
+}
+a.card.card--inactive:hover{ transform: none; border-color: var(--line); }
+.status-pill--sold{ background: var(--danger-soft); color: var(--danger); }
+ 
+/* ---------- Button state feedback (buy / trade / confirm / rate) ---------- */
+.button:disabled{ cursor: default; opacity: 0.7; }
+.button.is-done{ background: var(--accent); border-color: var(--accent); color: #fff; opacity: 1; }
+.button.is-error{ background: var(--danger); border-color: var(--danger); color: #fff; opacity: 1; }
+
+.received-tag{
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 4px 8px;
+  border-radius: 5px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+.dashboard-section{ margin-bottom: 40px; }
+.dashboard-section h2{ margin-bottom: 4px; }
+.dashboard-section .dashboard-sub{ margin: -12px 0 4px; }
+.dashboard-empty{ color: var(--ink-faint); font-size: 13px; margin: 8px 0 0; }
+ 
+/* ---------- Trade detail page ---------- */
+.trade-detail__counterpart{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 20px;
+}
+.trade-detail__counterpart .seller-meta{ display: flex; gap: 8px; font-size: 12.5px; color: var(--ink-faint); }
+.rating-stars button:disabled{ cursor: default; }
+.rating-note{ font-size: 12.5px; color: var(--ink-faint); margin-top: 8px; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 640px){

@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyPayment = exports.initiatePayment = void 0;
+const MOCKPAY_URL = `${process.env.APP_URL}/mockpay-provider`;
 async function initiatePayment(customerEmail, amount, callbackUrl) {
-    const response = await fetch(`${process.env.MOCKPAY_URL}/transaction/initialize`, {
+    const response = await fetch(`${MOCKPAY_URL}/transaction/initialize`, {
         method: "POST",
         headers: {
             Authorization: `Bearer ${process.env.MOCKPAY_API_KEY}`,
@@ -19,7 +20,7 @@ async function initiatePayment(customerEmail, amount, callbackUrl) {
 }
 exports.initiatePayment = initiatePayment;
 async function verifyPayment(reference) {
-    const result = await fetch(`${process.env.MOCKPAY_URL}/transaction/verify/${reference}`, {
+    const result = await fetch(`${MOCKPAY_URL}/transaction/verify/${reference}`, {
         headers: {
             Authorization: `Bearer ${process.env.MOCKPAY_API_KEY}`,
         },

@@ -7,6 +7,7 @@ import { shapeUser, shapeMovie, withId } from "../utils/shared";
 import { recomputeUserRating } from "./user";
 import { initiatePayment, verifyPayment } from "../utils/payment";
 import User from "../models/User";
+import { url } from "inspector";
 
 const title = process.env.APP_NAME;
 const secret = process.env.JWT_SECRET as string;
@@ -126,16 +127,21 @@ export async function buyMovie(req: Request, res: Response) {
       return res.status(400).json({ message: "You can't buy your own listing" });
     }
 
+    const transactionId = randomUUID();
+    const authorizationUrl = await initiatePayment(buyer.email, movie.price, `${process.env.APP_URL}/sales/${transactionId}/complete`);
+
+    const params = new URL(authorizationUrl).searchParams;
+    const externalReference = params.get("reference");
+
     const sale = await Sale.create({
-      movie: movie._id,
+      movie: movie.id,
       seller_id: movie.createdBy,
       buyer_id: buyerId,
       value_amount: movie.price,
-      transaction_id: randomUUID(),
+      transaction_id: transactionId,
+      external_reference: externalReference,
       completed: false,
     });
-
-    const authorizationUrl = await initiatePayment(buyer.email, movie.price, `${process.env.APP_URL}/sales/${sale.transaction_id}/complete`);
 
     return res.status(201).json({ sale: shapeSale(sale), authorizationUrl });
   } catch (error) {
@@ -146,11 +152,11 @@ export async function buyMovie(req: Request, res: Response) {
 
 export async function completePurchase(req: Request, res: Response) {
   try {
-    const { id: transactionId } = req.params;
+    const { id } = req.params;
     const { reference } = req.query as { reference: string };
     const isVerified = await verifyPayment(reference);
 
-    const sale = await Sale.findOne({ transaction_id: transactionId }).populate("movie").populate("seller_id", POPULATE_USER);
+    const sale = await Sale.findOne({ transaction_id: id }).populate("seller_id", POPULATE_USER);
     if (!sale) {
       return res.status(404).json({ message: "Transaction not found" });
     }
@@ -164,7 +170,6 @@ export async function completePurchase(req: Request, res: Response) {
     }
 
     if (isVerified) {
-      sale.external_reference = reference;
       sale.completed = isVerified;
       await sale.save();
 
@@ -173,7 +178,7 @@ export async function completePurchase(req: Request, res: Response) {
       await movie.save();
     }
 
-    return res.status(200).json({ sale: shapeSale(sale) });
+    return res.redirect(`/sales/${sale.id}`);
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Could not complete purchase" });

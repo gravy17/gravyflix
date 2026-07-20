@@ -87,7 +87,7 @@ function render(trade) {
           <p class="seller-name">${counterpartName}</p>
           <p class="seller-meta">
             ${counterpartLocation ? `<span>${counterpartLocation}</span>` : ""}
-            ${counterpartRating ? `<span class="seller-rating">${counterpartRating}/100</span>` : ""}
+            ${counterpartRating ? `<span class="seller-rating">${counterpartRating}%</span>` : ""}
           </p>
         </div>
       </div>

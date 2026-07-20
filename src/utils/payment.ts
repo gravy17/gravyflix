@@ -1,6 +1,8 @@
+const MOCKPAY_URL = `${process.env.APP_URL}/mockpay-provider`;
+
 export async function initiatePayment(customerEmail: string, amount: number, callbackUrl: string): Promise<string> {
     const response = await fetch(
-        `${process.env.MOCKPAY_URL}/transaction/initialize`,
+        `${MOCKPAY_URL}/transaction/initialize`,
         {
             method: "POST",
             headers: {
@@ -22,7 +24,7 @@ export async function initiatePayment(customerEmail: string, amount: number, cal
 
 export async function verifyPayment(reference: string): Promise<boolean> {
     const result = await fetch(
-        `${process.env.MOCKPAY_URL}/transaction/verify/${reference}`,
+        `${MOCKPAY_URL}/transaction/verify/${reference}`,
         {
             headers: {
                 Authorization: `Bearer ${process.env.MOCKPAY_API_KEY}`,
